@@ -1,0 +1,70 @@
+digraph {
+	subgraph cluster_external {
+		color=black;
+		label="External";
+
+		chromium [label="Chromium"];
+		x11 [label="X11"];
+		gpu [label="GPU"];
+		gpu -> x11;
+		gnunet [label="GNUnet"];
+		git [label="Git"];
+		nix [label="Nix"];
+		guix [label="Guix"];
+		i3 [label="i3"];
+		git_annex [label="git-annex"];
+		git_annex -> git;
+		btrfs [label="Btrfs"];
+		zfs [label="ZFS"];
+		remind [label="Remind"];
+	}
+
+	rewm [label="ReWM"]; // window manager
+	rewm -> x11;
+	rewm -> uwi;
+	rewm -> i3 [label="inspiration"];
+	uwi [label="UwI"]; // UI system
+	uwi -> x11;
+	uwi -> gpu;
+	owb [label="OWB"]; // oh web browser: web browser
+	owb -> uwi;
+	owb -> chromium;
+	hipgis [label="HiPGiS"]; // high performance game streaming: remote desktop
+	hipgis -> x11;
+	hipgis -> gpu;
+
+	ctuk [label="CtuK"]; // computer to computer: routing/system catalog
+	ctuk -> network_manager [label="addon?"];
+	ctuk -> gnunet [label="addon"];
+	network_manager [label="Network Manager"]; // network manager
+	good [label="GOOD"]; // data manager
+	good -> ctuk; // for transfering data
+	good -> git_annex [label="inspiration"];
+	good -> filesystem [label="soft"];
+	pile [label="Pile"]; // package manager
+	pile -> good; // for storing packages
+	pile -> ujba; // for building packages
+	pile -> nix [label="inspiration"];
+	pile -> guix [label="inspiration"];
+	ujba [label="Ujba"]; // your job: job system
+	ujba -> ctuk; // for communication
+	ujba -> good [label="addon"]; // so it can factor what data is stored where into choosing a system
+	ujba -> pile [label="addon"]; // so it can factor what packages are installed where into choosing a system
+	decon [label="DeCon"]; // distributed control
+	decon -> ctuk;
+	decon -> network_manager;
+	decon -> good;
+	decon -> pile;
+	decon -> ujba;
+	decon -> virtual_machines;
+	decon -> scheduler;
+	virtual_machines [label="Virtual Machines"]; // virtual machines
+	virtual_machines -> ctuk; // for migration
+	virtual_machines -> network_manager; // for network connections
+	virtual_machines -> good; // for image storage, migration and filesystem passthrough
+	scheduler [label="Scheduler"]; // scheduler
+	scheduler -> remind [label="inspiration"];
+	filesystem [label="File System"]; // filesystem
+	filesystem -> btrfs [label="inspiration"];
+	filesystem -> zfs [label="inspiration"];
+}

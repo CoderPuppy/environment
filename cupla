@@ -1,0 +1,99 @@
+programming language
+
+row polymorphism
+	disjoint constraint
+	∀ rs : List (Map Symbol Type). disjoint rs ⇒ Record (union rs) ≅ Tuple (map Record rs)
+data types
+	collections: Map, List, Set
+	records: Record, Tuple
+	union
+
+	CoRecord : Map k Type → Type
+	So : Bool → Type
+	makeRecord :
+		(ks : Set) (o : Relation.Binary ks) →
+		{¬refl : ¬ Relation.Reflexive o} {asym : Relation.Asymmetric o} {trans : Relation.Transitive o} →
+		{τs : Record ks o $ makeRecord ks o $ λ k τs → Record o τs → Type} →
+		((k : ks) → (r : Record (filter (o k) ks) o (fst $ _≅_.l⇒r joinSplitRecord τs)) → get τs k r) →
+		Record ks o τs
+	Record :
+		(ks : Set) → (o : Relation.Binary ks) →
+		{¬refl : ¬ Relation.Reflexive o} {asym : Relation.Asymmetric o} {trans : Relation.Transitive o} →
+		Record ks o (makeRecord ks o $ λ k τs → Record o τs → Type) → Type
+	get : (k : ks) → (r : Record ks o τs) → get τs k (fst $ _≅_.l⇒r joinSplitRecord r)
+	joinSplitRecord :
+		{ks : Set} →
+		{rs : Map ks (record : {
+			ks' : Set
+			o : Relation.Binary ks'
+			¬refl : ¬ Relation.Reflexive o
+			asym : Relation.Asymmetric o
+			trans : Relation.Transitive o
+			τs : Record ks' o $ makeRecord ks' o $ λ k τs → Record o τs → Type
+		})} →
+		{disj : Disjoint $ map (.ks') rs} →
+		Iso
+			(let
+				ks' = union $ map (.ks') rs
+				o = λ c v → let
+					kc , pc = Disjoint.reverse c disj
+					kv , pv = Disjoint.reverse v disj
+					w = get kc rs
+				in ∃ c≡v : kc ≡ kv. w.o c (replace ? (sym c≡v) v)
+			in Record ks' o $ makeRecord ks' o $ λ k' τs → let
+				k , p = Disjoint.reverse k' disj
+				w = get k rs
+			in get k' w.τs $ fst $ _≅_.l⇒r joinSplitRecord τs)
+			(
+				Record ks (λ _ _ → False) $
+				makeRecord ks (λ _ _ → False) $ λ k _ →
+				let w = get k rs in
+				Record w.ks' w.o w.τs
+			)
+
+	map :
+		(ks : Set) (oi : Relation.Binary ks) →
+		{¬refl-i : ¬ Relation.Reflexive oi} {asym-i : Relation.Asymmetric oi} {trans-i : Relation.Transitive oi} →
+		(oo : Relation.Binary ks) →
+		{¬refl-o : ¬ Relation.Reflexive oo} {asym-o : Relation.Asymmetric oo} {trans-o : Relation.Transitive oo} →
+		{τsi : Record ks oi $ makeRecord ks oi $ λ k τs → Record oi τs → Type} →
+		{τo :
+			{k : ks} →
+			(ro : Record
+				(filter (oo k) ks) oo
+				(makeRecord (filter (oo k) ks) oo $ λ k ro →
+					τo ro $ get k ri)
+			) →
+			(v : get k τsi (fst $ _≅_.l⇒r joinSplitRecord ri)) →
+			Type
+		} →
+		(f :
+			{k : ks} →
+			(ro : Record
+				(filter (oo k) ks) oo
+				(makeRecord (filter (oo k) ks) oo $ λ k ro →
+					τo ro $ get k ri)
+			) →
+			(v : get k τsi (fst $ _≅_.l⇒r joinSplitRecord ri)) →
+			τo ro v
+		) →
+		(ri : Record ks oi τsi) →
+		Record ks oo (makeRecord ks oo $ λ k ro → τo ro $ get k ri)
+
+	Map ks v = Record ks (λ _ _ → False) $ makeRecord ks (λ _ _ → False) $ λ k _ → v
+
+	Map k v = Record $ replicate v k
+	Vect n a = Record $ replicate a $ ∃ m : ℕ. So $ m < n
+	Relation.Binary k = k → k → Type
+	Relation.Reflexive r = (v : k) → r v v
+	Relation.Asymmetric r = (a b : k) → r a b → r b a → ⊥
+	Relation.Transitive r = (a b c : k) → r a b → r b c → r a c
+	disjoint : (ss : Set) → {isSet : (v : ss) → v.type ≡ Set} → Type
+	disjoint ss {isSet} =
+		(sv₁ : ss) → let s₁ = replace id (isSet sv₁) sv₁.val in 
+		(sv₂ : ss) → let s₂ = replace id (isSet sv₂) sv₂.val in 
+		{s₁≠s₂ : s₁ ≠ s₂} → (v₁ : s₁) → (v₂ : s₂) → v₁ ≠ v₂
+
+	replicate : v → (k : Type) → Record (replicate v k)
+	CoRecord : Record (replicate Type k) → Type
+	So : Bool → Type

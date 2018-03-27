@@ -1,0 +1,17 @@
+routing: CtuK
+	send data from one system to another
+	also keeps track of what systems exist
+network manager
+	manage network links, topography, routing
+data manager: GOOD (good ole orderly dump)
+	keep track of what data is on what machine and move it when necessary
+package manager: Pile
+job system: Ujba
+	let you run jobs on other systems
+distributed control
+	distribute instructions and configuration between systems
+virtual machines
+	run virtual machines on a host
+scheduler
+	run things in the future
+filesystem
