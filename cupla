@@ -13,13 +13,14 @@ data types
 	makeRecord :
 		(ks : Set) (o : Relation.Binary ks) →
 		{¬refl : ¬ Relation.Reflexive o} {asym : Relation.Asymmetric o} {trans : Relation.Transitive o} →
-		{τs : Record ks o $ makeRecord ks o $ λ k τs → Record o τs → Type} →
-		((k : ks) → (r : Record (filter (o k) ks) o (fst $ _≅_.l⇒r joinSplitRecord τs)) → get τs k r) →
+		{τs : Record ks o $ makeRecord ks o $ λ k → Record (filter (o k) ks) o (fst $ _≅_.l⇒r joinSplitRecord τs) → Type} →
+		(f : (k : ks) → get τs k $ makeRecord (filter (o k) ks) o f) →
 		Record ks o τs
 	Record :
 		(ks : Set) → (o : Relation.Binary ks) →
 		{¬refl : ¬ Relation.Reflexive o} {asym : Relation.Asymmetric o} {trans : Relation.Transitive o} →
-		Record ks o (makeRecord ks o $ λ k τs → Record o τs → Type) → Type
+		(τs : Record ks o $ makeRecord ks o $ λ k → Record (filter (o k) ks) o (fst $ _≅_.l⇒r joinSplitRecord τs) → Type) →
+		Type
 	get : (k : ks) → (r : Record ks o τs) → get τs k (fst $ _≅_.l⇒r joinSplitRecord r)
 	joinSplitRecord :
 		{ks : Set} →
@@ -29,7 +30,7 @@ data types
 			¬refl : ¬ Relation.Reflexive o
 			asym : Relation.Asymmetric o
 			trans : Relation.Transitive o
-			τs : Record ks' o $ makeRecord ks' o $ λ k τs → Record o τs → Type
+			τs : Record ks' o $ makeRecord ks' o $ λ k → Record (filter (o k) ks') o (fst $ _≅_.l⇒r joinSplitRecord τs) → Type
 		})} →
 		{disj : Disjoint $ map (.ks') rs} →
 		Iso

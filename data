@@ -1,0 +1,18 @@
+filesystem
+	mix of three types of drives
+		ssds
+		spinning disks
+		automated removable media (tape/optical)
+	failure tolerance
+
+research
+	Reiser4
+		https://reiser4.wiki.kernel.org/index.php/V4
+		https://reiser4.wiki.kernel.org/index.php/Future_Vision
+		https://www.youtube.com/watch?v=HytWhfo7-zI
+	Tux3
+	HAMMER2
+	Btrfs
+	ZFS
+	generic
+		https://news.ycombinator.com/item?id=16995612 (never write your own database)
