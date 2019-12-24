@@ -1,0 +1,27 @@
+principles
+	forgetting must be explicit
+	sharing must be explicit
+	deleting must be complete
+
+Indov
+	a very basic data store combined with higher level principles
+
+	principles
+		nothing has meaning unless you give it meaning (no global namespace)
+		data entry shouldn't be normalized
+
+	compared to FoundationDB
+		FDB is designed more for OLTP where transactions are processing data and then writing out to the same data
+		Indov is designed for just throwing lots of disparate data in and then viewing it in different ways
+		old data has to be explicitly forgotten and referencing old data that has been superceeded is very important
+	
+	compared to content addressable stores
+		CASs are easily distributable (merkle trees)
+		but they aren't suitable for this (TODO: why?)
+		they could be useful for underlying storage
+
+		Indov also has to store assets, which is what CASs are great at
+		Indov cares about metadata that's often not important to the content, but important to someone inspecting it later
+		for example software build artifacts quite often carry some information about when they were built or on what computer they were built
+		some tools explicitly remove these (e.g. Guix's normalized archives) in order to get reproducible builds
+		Indov has to be able to forget about these but still remember them
